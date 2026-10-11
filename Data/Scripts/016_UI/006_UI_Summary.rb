@@ -504,9 +504,9 @@ class PokemonSummary_Scene
     ]
     # Write the held item's name
     if @pokemon.hasItem?
-      textpos.push([@pokemon.item.name, 40, 358, 0, base, shadow, 1])
+      pbDrawOutlineText(overlay, 40, 358, 154, 32, @pokemon.item.name, base, shadow)
     else
-      textpos.push([_INTL("None"), 16, 358, 0, base, shadow, 1])
+      pbDrawOutlineText(overlay, 16, 358, 178, 32, _INTL("None"), base, shadow)
     end
     # Write the gender symbol
     if @pokemon.male?
@@ -1570,8 +1570,8 @@ class PokemonSummary_Scene
     cmdMark     = -1
     if !@pokemon.egg?
       commands[cmdGiveItem = commands.length] = _INTL("Give item") if !@team_builder_mode
-      commands[cmdTakeItem = commands.length] = _INTL("Take item") if @pokemon.hasItem?
-      commands[cmdPokedex = commands.length]  = _INTL("View Pokédex") if $player.has_pokedex
+      commands[cmdTakeItem = commands.length] = _INTL("Take item") if @pokemon.hasItem? && !@team_builder_mode
+      commands[cmdPokedex = commands.length]  = _INTL("View Pokédex") if $player.has_pokedex && !@team_builder_mode
       if @page == 4
         commands[cmdWithin = commands.length] = @withinsym ? _INTL("Show Text") : _INTL("Show Symbols")
       end

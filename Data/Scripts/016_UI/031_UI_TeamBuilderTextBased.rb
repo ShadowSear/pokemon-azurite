@@ -41,6 +41,7 @@ class TeamBuilderTextBasedScreen
     using(cmdwindow = Window_CommandPokemon.new(commands)) {
       cmdwindow.z = @viewport.z + 1
       cmdwindow.index = index
+      cmdwindow.height = @sprites["textbox"].y if cmdwindow.height > @sprites["textbox"].y
       pbBottomRight(cmdwindow)
       cmdwindow.y -= @sprites["textbox"].height
       loop do
