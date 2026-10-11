@@ -816,25 +816,44 @@ MenuHandlers.add(:pokemon_debug_menu, :set_shiny_variant, {
     loop do
       msg_idx = pkmn.super_shiny? ? 4 : pkmn.shiny_variant
       msg = [_INTL("Is normal (not shiny)."), _INTL("Is shiny."), _INTL("Is albino."), _INTL("Is glossy."), _INTL("Is super shiny."), ][msg_idx]
-      cmd = screen.pbShowCommands(msg, [_INTL("Make shiny"), _INTL("Make albino"), _INTL("Make glossy"), _INTL("Make super shiny"),
-                                        _INTL("Make normal"), _INTL("Reset")], cmd)
+      cmdShiny = -1
+      cmdAlbino = -1
+      cmdGlossy = -1
+      cmdSuperShiny = -1
+      cmdNormal = -1
+      cmdReset = -1
+      cmds = []
+      cmdShiny = cmds.length
+      cmds.push(_INTL("Make shiny"))
+      cmdAlbino = cmds.length
+      cmds.push(_INTL("Make albino"))
+      if !screen.team_builder_mode
+        cmdGlossy = cmds.length
+        cmds.push(_INTL("Make glossy"))
+      end
+      cmdSuperShiny = cmds.length
+      cmds.push(_INTL("Make super shiny"))
+      cmdNormal = cmds.length
+      cmds.push(_INTL("Make normal"))
+      cmdReset = cmds.length
+      cmds.push(_INTL("Reset"))
+      cmd = screen.pbShowCommands(msg, cmds, cmd)
       break if cmd < 0
-      case cmd
-      when 0   # Make shiny
+      if cmdShiny >= 0 && cmd == cmdShiny # Make shiny
         pkmn.makeShiny
         pkmn.super_shiny = false
-      when 1   # Make albino
+      elsif cmdAlbino >= 0 && cmd == cmdAlbino # Make albino
         pkmn.makeAlbino
         pkmn.super_shiny = false
-      when 2   # Make glossy
+      elsif cmdGlossy >= 0 && cmd == cmdGlossy # Make glossy
         pkmn.makeGlossy
         pkmn.super_shiny = false
-      when 3   # Make super shiny
+      elsif cmdSuperShiny >= 0 && cmd == cmdSuperShiny # Make super shiny
         pkmn.super_shiny = true
-      when 4   # Make normal
+      elsif cmdNormal >= 0 && cmd == cmdNormal # Make normal
         pkmn.makeRegular
         pkmn.super_shiny = false
-      when 5   # Reset
+      elsif cmdReset >= 0 && cmd == cmdReset # Reset
         pkmn.shiny_variant = nil
         pkmn.super_shiny = nil
       end

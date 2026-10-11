@@ -32,6 +32,13 @@ class RewardItemUI
     @sprites["sel"] = RoguelikeSelectorSprite.new(@viewport, 4)
     @sprites["sel"].filename = "Graphics/UI/Rewards/overlay_select"
     @sprites["sel"].visible = false
+    @sprites["overlay_item_desc"] = ScrollingTextSprite.new(452, 70, @viewport)
+    @sprites["overlay_item_desc"].base = MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["overlay_item_desc"].shadow = MessageConfig::DARK_TEXT_SHADOW_COLOR
+    @sprites["overlay_item_desc"].maxlines = 3
+    @sprites["overlay_item_desc"].draw_method = "drawFormattedTextEx"
+    @sprites["overlay_item_desc"].lineheight = 26
+    pbSetSmallFont(@sprites["overlay_item_desc"].bitmap)
     total_w = 0
     $player.party.each_with_index do |pkmn, i|
       @sprites["pkmn_#{i}"] = PokemonIconSprite.new(pkmn, @viewport)
@@ -120,6 +127,7 @@ class RewardItemUI
     @sprites["sel"].visible = show
     @sprites["textbox"].visible = show
     @sprites["overlay_btm"].visible = show
+    @sprites["overlay_item_desc"].visible = show
     update
   end
 
@@ -165,14 +173,14 @@ class RewardItemUI
     end
     overlay = @sprites["overlay_top"].bitmap
     overlay.clear
-    text_list = [
-      [_INTL("Reroll: Z (${1})", reroll_cost), Graphics.width - REROLL_TEXT_SPACE, 12, 0, Color.white, Color.new(0, 0, 0), true],
-      [_INTL("${1} left", $player.money), Graphics.width - REROLL_TEXT_SPACE, 38, 0, Color.white, Color.new(0, 0, 0), true],
-    ]
+    pbDrawOutlineText(overlay, Graphics.width - REROLL_TEXT_SPACE, 12, REROLL_TEXT_SPACE, 32, _INTL("Reroll: Z (${1})", reroll_cost),
+      Color.white, Color.new(0, 0, 0))
+    pbDrawOutlineText(overlay, Graphics.width - REROLL_TEXT_SPACE, 38, REROLL_TEXT_SPACE, 32, _INTL("${1} left", $player.money),
+      Color.white, Color.new(0, 0, 0))
     if $game_temp.game_mode_type == :ENDLESS_MODE
-      text_list.push([_INTL("Round {1}", $PokemonGlobal.runnerModeBattleCounter), Graphics.width - REROLL_TEXT_SPACE, 64, 0, Color.white, Color.new(0, 0, 0), true])
+      pbDrawOutlineText(overlay, Graphics.width - REROLL_TEXT_SPACE, 64, REROLL_TEXT_SPACE, 32, _INTL("Round {1}", $PokemonGlobal.runnerModeBattleCounter),
+        Color.white, Color.new(0, 0, 0))
     end
-    pbDrawTextPositions(overlay, text_list)
   end
 
   def refresh_selected
@@ -190,8 +198,11 @@ class RewardItemUI
     ])
     x_pos = ((Graphics.width - @sprites["textbox"].width) / 2) + 26
     y_pos += 32
-    drawFormattedTextEx(overlay, x_pos, y_pos, 452, GameData::RewardPool.item_description(item_data.id),
-      MessageConfig::DARK_TEXT_MAIN_COLOR, MessageConfig::DARK_TEXT_SHADOW_COLOR, 26)
+    @sprites["overlay_item_desc"].x = x_pos
+    @sprites["overlay_item_desc"].y = y_pos + Graphics.height / 2
+    @sprites["overlay_item_desc"].text = nil
+    @sprites["overlay_item_desc"].bitmap.clear
+    @sprites["overlay_item_desc"].text = GameData::RewardPool.item_description(item_data.id)
   end
 
   def refresh_item_pool

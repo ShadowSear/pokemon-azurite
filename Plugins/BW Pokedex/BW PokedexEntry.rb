@@ -69,10 +69,11 @@ class PokemonPokedexInfo_Scene
     @sprites["downarrow"].visible = false
     @sprites["overlay"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
     pbSetSystemFontBW(@sprites["overlay"].bitmap)
-    @sprites["overlaydexentry"] = ScrollingTextSprite.new(Graphics.width - (40 * 2), 132, @viewport)
+    @sprites["overlaydexentry"] = ScrollingTextSprite.new(Graphics.width - (40 * 2), 124, @viewport)
     @sprites["overlaydexentry"].x = 38
-    @sprites["overlaydexentry"].y = (@brief ? 250 : 212)
+    @sprites["overlaydexentry"].y = (@brief ? 256 : 218)
     @sprites["overlaydexentry"].maxlines = 4
+    @sprites["overlaydexentry"].y_offset = -6
     pbSetSystemFontBW(@sprites["overlaydexentry"].bitmap)
     pbUpdateDummyPokemon
     @available = pbGetAvailableForms
@@ -123,10 +124,11 @@ class PokemonPokedexInfo_Scene
     @sprites["infosprite"].y = 136
     @sprites["overlay"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
     pbSetSystemFontBW(@sprites["overlay"].bitmap)
-    @sprites["overlaydexentry"] = ScrollingTextSprite.new(Graphics.width - (40 * 2), 132, @viewport)
+    @sprites["overlaydexentry"] = ScrollingTextSprite.new(Graphics.width - (40 * 2), 124, @viewport)
     @sprites["overlaydexentry"].x = 38
-    @sprites["overlaydexentry"].y = (@brief ? 250 : 212)
+    @sprites["overlaydexentry"].y = (@brief ? 256 : 218)
     @sprites["overlaydexentry"].maxlines = 4
+    @sprites["overlaydexentry"].y_offset = -6
     pbSetSystemFontBW(@sprites["overlaydexentry"].bitmap)
     pbUpdateDummyPokemon
     drawPage(@page)

@@ -4,9 +4,13 @@ class ScrollingTextSprite < BitmapSprite
   attr_accessor :base
   attr_accessor :shadow
   attr_accessor :draw_method
+  attr_accessor :lineheight
+  attr_accessor :y_offset
   
   def initialize(width, height, viewport = nil)
     super(width, height, viewport)
+    @lineheight = 32
+    @y_offset = 0
     reset_text_timer
   end
 
@@ -36,10 +40,10 @@ class ScrollingTextSprite < BitmapSprite
       self.bitmap.clear
       if @draw_method == "drawFormattedTextEx"
         new_chars = @chars.map {|char| new_char = char.dup; new_char[2] += calculated_y; new_char }
-        new_chars = new_chars.filter {|char| char[2] > -32 && char[2] < @maxlines * 32 }
+        new_chars = new_chars.filter {|char| char[2] > -@lineheight && char[2] < @maxlines * @lineheight }
         drawFormattedChars(bitmap, new_chars)
       else
-        drawTextEx(self.bitmap, 0, calculated_y, self.bitmap.width, 99,   # overlay, x, y, width, num lines
+        drawTextEx(self.bitmap, 0, calculated_y + @y_offset, self.bitmap.width, 99,   # overlay, x, y, width, num lines
                   @text, @base, @shadow)
       end
       @current_y = calculated_y
@@ -52,8 +56,8 @@ class ScrollingTextSprite < BitmapSprite
       @max_y_diff = 0
     else
       if @draw_method == "drawFormattedTextEx"
-        @chars = getFormattedTextChars(self.bitmap, 0, 2, self.bitmap.width, @text, @base, @shadow)
-        @max_y_diff = [(@chars.last[2] - (@maxlines - 1) * 32), 0].max
+        @chars = getFormattedTextChars(self.bitmap, 0, 2, self.bitmap.width, @text, @base, @shadow, @lineheight)
+        @max_y_diff = [(@chars.last[2] - (@maxlines - 1) * @lineheight), 0].max
       else
         normtext = getLineBrokenChunks(self.bitmap, @text, self.bitmap.width, nil)
         @max_y_diff = [(normtext.last[2] - (@maxlines - 1) * 32), 0].max
